@@ -1,0 +1,20 @@
+name: Rebuild the Docker Image
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build-and-push:
+    name: (Re)Build Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: docker build && push
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "logging into Docker Hub as $DOCKER_USERNAME ..."
+          echo -n $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+          make push
